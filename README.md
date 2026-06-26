@@ -58,7 +58,7 @@
 
 ```
 Jan   Feb   Mar   Apr   May   Jun   Jul   Aug   Sep   Oct   Nov   Dec
- 77B   76.9B   95B  90.7B  102.3   88.9B   87.3B    90.6B   89.5B   82.3B   80.3B   72.7B
+77B   76.9B   95B  90.7B  102.3   88.9B   87.3B   90.6B   89.5B   82.3B   80.3B   72.7B
 ```
 
 **May is the peak** (102.3B), driven by mid-year corporate budget cycles. **December is the trough** (72.7B), with Jan–Feb also soft (Tet holiday + new fiscal-year lag). The steady Q4 slide signals the need for an **end-of-year deal push** targeting corporate budget flush.
@@ -283,7 +283,6 @@ jupyter notebook CLV.ipynb
 ## Repository Structure
 
 ```
-DataExplorers/
 ├── dulieubanhang.csv          # Raw transactions
 ├── khachhang.csv              # Customer master
 ├── sanpham.csv                # Product catalog
@@ -293,7 +292,7 @@ DataExplorers/
 │
 ├── rfm.py                     # RFM + Customer Value analysis
 ├── cohortanalysis.py          # Cohort retention analysis
-├── CLV.py / CLV.ipynb         # CLV prediction models
+├── CLV.ipynb                  # CLV prediction models
 ├── eda.ipynb                  # Exploratory Data Analysis
 ├── db.py                      # DB connection helper
 │
@@ -301,9 +300,11 @@ DataExplorers/
 ├── cohort.sql                 # Cohort pivot (SQL version)
 ├── duplicate.sql              # Data deduplication
 │
+│── requirements.txt           # Package
+│
 ├── khachhang_rfm.csv          # Output: RFM segments
 ├── customer_value.csv         # Output: RFM + AOV + Tenure
-├── cohort_retention_2024.png  # Output: Cohort heatmap
 ├── RankRFM.xlsx               # Output: RFM ranking
 └── DataE.pbix                 # Power BI dashboard
+
 ```
