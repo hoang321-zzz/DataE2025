@@ -1,0 +1,12 @@
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# Competition brief (organizer's copyright; non-ASCII filename)
+*.pdf
+
+# Local tooling
+.claude/
