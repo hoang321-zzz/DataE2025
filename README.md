@@ -255,8 +255,8 @@ SQL Server ──→ Python (pandas, sklearn) ──→ Power BI
 ## Setup
 
 ```bash
-git clone <repo-url>
-cd DataExplorers
+git clone https://github.com/hoang321-zzz/DataE2025.git
+cd DataE2025
 pip install -r requirements.txt
 
 # Windows
@@ -274,7 +274,7 @@ DB_DRIVER={ODBC Driver 17 for SQL Server}
 ```bash
 # Run analyses
 python rfm.py             # → khachhang_rfm.csv, customer_value.csv
-python cohortanalysis.py  # → cohort_retention_2024.png
+python cohortanalysis.py  
 jupyter notebook CLV.ipynb
 ```
 
