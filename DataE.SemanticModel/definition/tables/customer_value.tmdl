@@ -1,0 +1,129 @@
+table customer_value
+	lineageTag: ef34c87d-9758-47ad-94b5-a17037f673de
+
+	measure 'Pareto khách hàng' = ```
+			
+			VAR doanhthu = SUM(customer_value[Monetary])
+			VAR luyke = 
+			    SUMX(
+			        FILTER(
+			            SUMMARIZE(ALLSELECTED(customer_value),customer_value[Segment],"Amount",SUM(customer_value[Monetary])),
+			            [Amount] >= doanhthu), [Amount])
+			var tongdoanhthu = CALCULATE(SUM(customer_value[Monetary]), ALLSELECTED(customer_value))
+			RETURN luyke/tongdoanhthu
+			```
+		lineageTag: 1750fda9-19ca-4b18-a19c-b91e86d6c5a0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Mã_KH
+		dataType: string
+		lineageTag: 747bc2e2-4dc0-4baf-b492-6dc53796c1f0
+		summarizeBy: none
+		sourceColumn: Mã_KH
+
+		annotation SummarizationSetBy = Automatic
+
+	column Recency
+		dataType: int64
+		formatString: 0
+		lineageTag: e4a94fb1-4390-41a4-a592-4f58db56f050
+		summarizeBy: sum
+		sourceColumn: Recency
+
+		annotation SummarizationSetBy = Automatic
+
+	column Frequency
+		dataType: int64
+		formatString: 0
+		lineageTag: c0da8c98-70e4-4eff-9fab-59748f8445bc
+		summarizeBy: sum
+		sourceColumn: Frequency
+
+		annotation SummarizationSetBy = Automatic
+
+	column Monetary
+		dataType: double
+		formatString: 0
+		lineageTag: 16882ac0-f349-4cd8-99bd-8a65a3d95759
+		summarizeBy: sum
+		sourceColumn: Monetary
+
+		annotation SummarizationSetBy = Automatic
+
+	column AvgOrderValue
+		dataType: double
+		formatString: 0
+		lineageTag: 4b2f57a4-837b-4d9c-bf07-d959c1a5ded0
+		summarizeBy: sum
+		sourceColumn: AvgOrderValue
+
+		annotation SummarizationSetBy = Automatic
+
+	column TenureMonths
+		dataType: double
+		lineageTag: 6f6243c0-2e85-42af-a8c4-1636b5501df0
+		summarizeBy: sum
+		sourceColumn: TenureMonths
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column R_score
+		dataType: int64
+		formatString: 0
+		lineageTag: 9fd6313a-a17a-4ecd-9164-531005cd826c
+		summarizeBy: sum
+		sourceColumn: R_score
+
+		annotation SummarizationSetBy = Automatic
+
+	column F_score
+		dataType: int64
+		formatString: 0
+		lineageTag: d315f5dd-c6f0-4204-af26-780fb4f5ac80
+		summarizeBy: sum
+		sourceColumn: F_score
+
+		annotation SummarizationSetBy = Automatic
+
+	column M_score
+		dataType: int64
+		formatString: 0
+		lineageTag: 7e04e3aa-1831-4976-99a5-9aa950dcb122
+		summarizeBy: sum
+		sourceColumn: M_score
+
+		annotation SummarizationSetBy = Automatic
+
+	column RFM_Score
+		dataType: string
+		lineageTag: 02a5ff6c-8213-4e10-8b11-fe9079260165
+		summarizeBy: none
+		sourceColumn: RFM_Score
+
+		annotation SummarizationSetBy = Automatic
+
+	column Segment
+		dataType: string
+		lineageTag: 76382bb6-ab39-44e0-aeda-4bc80906b874
+		summarizeBy: none
+		sourceColumn: Segment
+
+		annotation SummarizationSetBy = Automatic
+
+	partition customer_value = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("D:\Project\DataExplorers\customer_value.csv"),[Delimiter=",", Columns=11, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Recency", Int64.Type}, {"Frequency", Int64.Type}, {"Monetary", type number}, {"R_score", Int64.Type}, {"F_score", Int64.Type}, {"M_score", Int64.Type}, {"AvgOrderValue", type number}, {"TenureMonths", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

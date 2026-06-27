@@ -1,0 +1,32 @@
+table nhanvien
+	lineageTag: 2383eaa5-e116-4cb8-bdc5-a1660079da7c
+
+	column Mã_nhân_viên_bán
+		dataType: string
+		lineageTag: a50e2765-52d3-4e89-b735-5e2def7fb13c
+		summarizeBy: none
+		sourceColumn: Mã_nhân_viên_bán
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nhân_viên_bán
+		dataType: string
+		lineageTag: a05beee6-d788-43c4-a35b-37172af2799e
+		summarizeBy: none
+		sourceColumn: Nhân_viên_bán
+
+		annotation SummarizationSetBy = Automatic
+
+	partition nhanvien = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("DESKTOP-R39PBBV\SQLEXPRESS", "DataE2025"),
+				    dbo_nhanvien = Source{[Schema="dbo",Item="nhanvien"]}[Data]
+				in
+				    dbo_nhanvien
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

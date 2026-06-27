@@ -1,0 +1,40 @@
+table khachhang
+	lineageTag: 17d9c096-7bd6-406a-9c2a-a917c8426fdc
+
+	column Mã_KH
+		dataType: string
+		lineageTag: d44df439-a761-4f0e-8939-3580400fec1b
+		summarizeBy: none
+		sourceColumn: Mã_KH
+
+		annotation SummarizationSetBy = Automatic
+
+	column Khách_hàng
+		dataType: string
+		lineageTag: 8f355d19-d3d2-46ef-9d2b-567af2496826
+		summarizeBy: none
+		sourceColumn: Khách_hàng
+
+		annotation SummarizationSetBy = Automatic
+
+	column Loại_Khách_hàng
+		dataType: string
+		lineageTag: 1f09a502-eaed-4788-b899-3da4094488e6
+		summarizeBy: none
+		sourceColumn: Loại_Khách_hàng
+
+		annotation SummarizationSetBy = Automatic
+
+	partition khachhang = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("DESKTOP-R39PBBV\SQLEXPRESS", "DataE2025"),
+				    dbo_khachhang = Source{[Schema="dbo",Item="khachhang"]}[Data]
+				in
+				    dbo_khachhang
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

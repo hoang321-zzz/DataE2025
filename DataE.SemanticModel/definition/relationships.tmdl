@@ -1,0 +1,44 @@
+relationship 47e328f8-90af-d6eb-8817-1d76ffd6ca51
+	fromColumn: dulieubanhang.Mã_nhân_viên_bán
+	toColumn: nhanvien.Mã_nhân_viên_bán
+
+relationship bf7cbcc6-c2e4-d7a2-cd5d-35f2b5a798af
+	fromColumn: dulieubanhang.Mã_Sản_Phẩm
+	toColumn: sanpham.Mã_Sản_phẩm
+
+relationship d5b62612-8cb4-da84-7bd0-0a74a8792d16
+	fromColumn: dulieubanhang.Mã_KH
+	toColumn: khachhang.Mã_KH
+
+relationship 2fc43bca-a505-7d47-e2c5-514ac40d8a6f
+	fromColumn: KPI.Tên_chi_nhánh
+	toColumn: chinhanh.Tên_chi_nhánh
+
+relationship 37a12886-0a0d-42a9-a36c-a9439838583b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendar.Date
+	toColumn: LocalDateTable_1d0aac16-e76d-4b56-85a2-2d2515f1c688.Date
+
+relationship 06376cfc-a705-e17b-ef8b-5dd39ed1a90a
+	fromColumn: dulieubanhang.Ngày_hạch_toán
+	toColumn: Calendar.Date
+
+relationship be38201b-e0a6-3eaf-6efc-e21421f07b60
+	fromColumn: dulieubanhang.Chi_nhánh
+	toColumn: chinhanh.Mã_chi_nhánh
+
+relationship AutoDetected_8dd203ef-befe-4e5d-a983-1874ccbd3707
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: customer_value.Mã_KH
+	toColumn: khachhang.Mã_KH
+
+relationship AutoDetected_fbf640f0-c3ad-47b0-b60d-4924a81f2f52
+	fromColumn: customer_value.Segment
+	toColumn: RFM_Segment.Segment
+
+relationship c04963d6-a53c-41bd-be96-d1a443f50cb9
+	joinOnDateBehavior: datePartOnly
+	fromColumn: KPI.Thang
+	toColumn: LocalDateTable_33dfa815-6e1c-4870-a72f-fccdc5d75d02.Date
+

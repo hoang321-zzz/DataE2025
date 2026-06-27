@@ -1,0 +1,33 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["chinhanh","dulieubanhang","khachhang","KPI","nhanvien","sanpham","cohortanalysis","Measure","RFM_Segment","customer_value"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table chinhanh
+ref table dulieubanhang
+ref table DateTableTemplate_25f8f18e-28b6-46b4-a872-2b1f42c3b07a
+ref table khachhang
+ref table KPI
+ref table nhanvien
+ref table sanpham
+ref table cohortanalysis
+ref table Calendar
+ref table LocalDateTable_1d0aac16-e76d-4b56-85a2-2d2515f1c688
+ref table Measure
+ref table 'Discount (%)'
+ref table RFM_Segment
+ref table customer_value
+ref table 'Phân loại'
+ref table LocalDateTable_33dfa815-6e1c-4870-a72f-fccdc5d75d02
+
+ref cultureInfo en-US
+

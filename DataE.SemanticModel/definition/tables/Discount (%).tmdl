@@ -1,0 +1,28 @@
+table 'Discount (%)'
+	lineageTag: 29ee73e4-3220-4382-8a28-2a4bd9347cae
+
+	measure 'Discount (%) Value' = SELECTEDVALUE('Discount (%)'[Discount (%)])
+		lineageTag: f8f87893-b954-4a2c-874f-c2ff4c1f3cf1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Discount (%)'
+		dataType: double
+		formatString: 0
+		lineageTag: c9cc39b1-ae76-4652-9e8a-815bfa69c0f2
+		summarizeBy: none
+		sourceColumn: [Value]
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 0
+				}
+
+		annotation SummarizationSetBy = User
+
+	partition 'Discount (%)' = calculated
+		mode: import
+		source = GENERATESERIES(0, 100, 1)
+
+	annotation PBI_Id = 4ec0fad719654355bf18238c7d899d4d
+

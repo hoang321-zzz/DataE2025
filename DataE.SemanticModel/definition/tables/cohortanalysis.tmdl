@@ -1,0 +1,45 @@
+table cohortanalysis
+	lineageTag: c014699c-31e5-4391-8394-a35ed640078b
+
+	column CohortMonth
+		dataType: string
+		lineageTag: 3bfd6c73-5736-4b8a-b192-f034bf379467
+		summarizeBy: none
+		sourceColumn: CohortMonth
+
+		annotation SummarizationSetBy = Automatic
+
+	column AfterMonths
+		dataType: int64
+		formatString: 0
+		lineageTag: 949ada5f-c357-42ae-baec-0090927a6ec8
+		summarizeBy: sum
+		sourceColumn: AfterMonths
+
+		annotation SummarizationSetBy = Automatic
+
+	column NumberOfCustomers
+		dataType: int64
+		formatString: 0
+		lineageTag: 2c681437-928b-42c7-9f98-c7c10bb151c3
+		summarizeBy: sum
+		sourceColumn: NumberOfCustomers
+
+		annotation SummarizationSetBy = Automatic
+
+	partition cohortanalysis = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("DESKTOP-R39PBBV\SQLEXPRESS", "DataE2025", [Query="WITH CustomerCohort AS (#(lf)    SELECT#(lf)        [Mã_KH],#(lf)        DATEADD(month, DATEDIFF(month, 0, MIN([Ngày_hạch_toán])), 0) AS CohortMonth#(lf)    FROM dbo.dulieubanhang#(lf)    WHERE [Số_lượng_bán] > 0#(lf)      AND [Doanh_thu] > 0#(lf)      AND [Mã_KH] IS NOT NULL#(lf)    GROUP BY [Mã_KH]#(lf)),#(lf)CohortData AS (#(lf)    SELECT#(lf)        FORMAT(cc.CohortMonth, 'yyyy-MM') AS CohortMonth,#(lf)        DATEDIFF(month, cc.CohortMonth,#(lf)            DATEADD(month, DATEDIFF(month, 0, bh.[Ngày_hạch_toán]), 0)#(lf)        ) AS CohortIndex,#(lf)        COUNT(DISTINCT bh.[Mã_KH]) AS Customers#(lf)    FROM CustomerCohort cc#(lf)    JOIN dbo.dulieubanhang bh ON cc.[Mã_KH] = bh.[Mã_KH]#(lf)    WHERE bh.[Số_lượng_bán] > 0#(lf)      AND bh.[Doanh_thu] > 0#(lf)    GROUP BY#(lf)        cc.CohortMonth,#(lf)        DATEDIFF(month, cc.CohortMonth,#(lf)            DATEADD(month, DATEDIFF(month, 0, bh.[Ngày_hạch_toán]), 0)#(lf)        )#(lf))#(lf)SELECT#(lf)    CohortMonth,#(lf)    [0]  AS Month_0,#(lf)    [1]  AS Month_1,#(lf)    [2]  AS Month_2,#(lf)    [3]  AS Month_3,#(lf)    [4]  AS Month_4,#(lf)    [5]  AS Month_5,#(lf)    [6]  AS Month_6,#(lf)    [7]  AS Month_7,#(lf)    [8]  AS Month_8,#(lf)    [9]  AS Month_9,#(lf)    [10] AS Month_10,#(lf)    [11] AS Month_11#(lf)FROM CohortData#(lf)PIVOT (#(lf)    SUM(Customers)#(lf)    FOR CohortIndex IN ([0],[1],[2],[3],[4],[5],[6],[7],[8],[9],[10],[11])#(lf)) AS PivotTable#(lf)ORDER BY CohortMonth"]),
+				    #"Renamed Columns" = Table.RenameColumns(Source,{{"Month_0", "0"}, {"Month_1", "1"}, {"Month_2", "2"}, {"Month_3", "3"}, {"Month_4", "4"}, {"Month_5", "5"}, {"Month_6", "6"}, {"Month_7", "7"}, {"Month_8", "8"}, {"Month_9", "9"}, {"Month_10", "10"}, {"Month_11", "11"}}),
+				    #"Unpivoted Other Columns" = Table.UnpivotOtherColumns(#"Renamed Columns", {"CohortMonth"}, "Attribute", "Value"),
+				    #"Renamed Columns1" = Table.RenameColumns(#"Unpivoted Other Columns",{{"Attribute", "AfterMonths"}, {"Value", "NumberOfCustomers"}}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Renamed Columns1",{{"AfterMonths", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

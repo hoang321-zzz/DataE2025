@@ -1,0 +1,103 @@
+table dulieubanhang
+	lineageTag: 5e580bb4-dd6e-4ae0-bc56-9b68f685dd6c
+
+	column Ngày_hạch_toán
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: c8c3f297-e4d0-4e78-99c5-e24df6358eaf
+		summarizeBy: none
+		sourceColumn: Ngày_hạch_toán
+
+		annotation SummarizationSetBy = Automatic
+
+	column Đơn_hàng
+		dataType: string
+		lineageTag: 85ac1f2e-df41-46f9-a4ac-badd1425fbfd
+		summarizeBy: none
+		sourceColumn: Đơn_hàng
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mã_KH
+		dataType: string
+		lineageTag: 82ce6742-4654-422b-bd48-c93997c483fe
+		summarizeBy: none
+		sourceColumn: Mã_KH
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mã_Sản_Phẩm
+		dataType: string
+		lineageTag: 07e30dc8-6173-4bdf-ac82-59a2d81a4034
+		summarizeBy: none
+		sourceColumn: Mã_Sản_Phẩm
+
+		annotation SummarizationSetBy = Automatic
+
+	column Số_lượng_bán
+		dataType: int64
+		formatString: 0
+		lineageTag: 27efad73-33ce-4a7e-8836-97e8791fdafa
+		summarizeBy: sum
+		sourceColumn: Số_lượng_bán
+
+		annotation SummarizationSetBy = Automatic
+
+	column Đơn_giá
+		dataType: double
+		lineageTag: 3d569324-625a-4a90-9577-9826a6f7d0d4
+		summarizeBy: sum
+		sourceColumn: Đơn_giá
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Doanh_thu
+		dataType: double
+		lineageTag: d89fb41e-3dcc-48ca-9d55-cb60f8b2c50a
+		summarizeBy: sum
+		sourceColumn: Doanh_thu
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Giá_vốn_hàng_hóa
+		dataType: double
+		lineageTag: d896825a-2304-4e4a-b53f-f6b34b5aa34f
+		summarizeBy: sum
+		sourceColumn: Giá_vốn_hàng_hóa
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Mã_nhân_viên_bán
+		dataType: string
+		lineageTag: 7c011fb6-fc5a-4d7d-8aac-7c7d7cee5417
+		summarizeBy: none
+		sourceColumn: Mã_nhân_viên_bán
+
+		annotation SummarizationSetBy = Automatic
+
+	column Chi_nhánh
+		dataType: string
+		lineageTag: d283d7bb-04d2-4eb2-955d-05c93064ff4e
+		summarizeBy: none
+		sourceColumn: Chi_nhánh
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dulieubanhang = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("DESKTOP-R39PBBV\SQLEXPRESS", "DataE2025", [Query="--CTE to identify if there are duplicate records#(lf)WITH DuplicateRecords AS (#(lf)#(tab)SELECT#(lf)#(tab)#(tab)[Ngày_hạch_toán],#(lf)#(tab)#(tab)[Đơn_hàng],#(lf)#(tab)#(tab)[Mã_KH],#(lf)#(tab)#(tab)[Mã_Sản_Phẩm],#(lf)#(tab)#(tab)[Số_lượng_bán],#(lf)#(tab)#(tab)[Đơn_giá],#(lf)#(tab)#(tab)[Doanh_thu],#(lf)#(tab)#(tab)[Giá_vốn_hàng_hóa],#(lf)#(tab)#(tab)[Mã_nhân_viên_bán],#(lf)#(tab)#(tab)[Chi_nhánh],#(lf)#(tab)#(tab)ROW_NUMBER() OVER(#(lf)#(tab)#(tab)#(tab)PARTITION BY [Ngày_hạch_toán],[Mã_KH],[Mã_Sản_Phẩm],[Số_lượng_bán],[Đơn_giá],[Doanh_thu],[Giá_vốn_hàng_hóa],[Mã_nhân_viên_bán],[Chi_nhánh]#(tab)#(tab)#(tab)ORDER BY [Đơn_hàng]#(lf)#(tab)#(tab)#(tab)) AS row_num#(lf)#(tab)FROM dbo.dulieubanhang#(lf))#(lf)#(lf)SELECT [Ngày_hạch_toán],#(lf)#(tab)#(tab)[Đơn_hàng],#(lf)#(tab)#(tab)[Mã_KH],#(lf)#(tab)#(tab)[Mã_Sản_Phẩm],#(lf)#(tab)#(tab)[Số_lượng_bán],#(lf)#(tab)#(tab)[Đơn_giá],#(lf)#(tab)#(tab)[Doanh_thu],#(lf)#(tab)#(tab)[Giá_vốn_hàng_hóa],#(lf)#(tab)#(tab)[Mã_nhân_viên_bán],#(lf)#(tab)#(tab)[Chi_nhánh]#(lf)FROM DuplicateRecords#(lf)WHERE row_num = 1#(lf)ORDER BY Đơn_hàng#(lf)"])
+				in
+				    Source
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

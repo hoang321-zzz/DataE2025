@@ -1,0 +1,49 @@
+table RFM_Segment
+	lineageTag: 544a3517-1fdb-4ede-8ae0-3eba406a7b9f
+
+	column Segment
+		dataType: string
+		lineageTag: d04a4b4f-9deb-4ce0-904d-957227dad8af
+		summarizeBy: none
+		sourceColumn: Segment
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Scores
+		dataType: string
+		lineageTag: 33f8c0e9-d4bf-451b-8bb0-a8f906b213bb
+		summarizeBy: none
+		sourceColumn: Scores
+
+		annotation SummarizationSetBy = Automatic
+
+	column Index
+		dataType: int64
+		formatString: 0
+		lineageTag: c0804af5-84e2-4cea-b4e2-9a4bc2a7d1ca
+		summarizeBy: none
+		sourceColumn: Index
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	partition RFM_Segment = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("D:\Project\DataExplorers\RankRFM.xlsx"), null, true),
+				    Sheet1_Sheet = Source{[Item="Sheet1",Kind="Sheet"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(Sheet1_Sheet,{{"Column1", type text}, {"Column2", type text}}),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Changed Type", [PromoteAllScalars=true]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"Segment", type text}, {"Scores", type text}}),
+				    #"Added Index" = Table.AddIndexColumn(#"Changed Type1", "Index", 1, 1, Int64.Type)
+				in
+				    #"Added Index"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

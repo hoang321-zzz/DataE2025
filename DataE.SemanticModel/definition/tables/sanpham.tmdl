@@ -1,0 +1,64 @@
+table sanpham
+	lineageTag: 1aaed086-1547-4d2d-b5af-6879884feb5a
+
+	column Mã_Sản_phẩm
+		dataType: string
+		lineageTag: 4e295a75-a9b7-4406-8722-8f7b3ee61abd
+		summarizeBy: none
+		sourceColumn: Mã_Sản_phẩm
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sản_phẩm
+		dataType: string
+		lineageTag: ec1f6563-4bc9-4dd7-8176-c907f097993c
+		summarizeBy: none
+		sourceColumn: Sản_phẩm
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nhóm_sản_phẩm
+		dataType: string
+		lineageTag: febb53ed-7bb4-49eb-8088-5d1bad40b5cf
+		summarizeBy: none
+		sourceColumn: Nhóm_sản_phẩm
+		sortByColumn: Index
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Giá_vốn
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: ddaacfc7-119b-4940-a207-39ffb55d7b3f
+		summarizeBy: none
+		sourceColumn: Giá_vốn
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column Index
+		dataType: string
+		lineageTag: d94dee2e-85a4-4d27-969b-e0b54da4e516
+		summarizeBy: none
+		sourceColumn: Index
+
+		annotation SummarizationSetBy = Automatic
+
+	partition sanpham = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("DESKTOP-R39PBBV\SQLEXPRESS", "DataE2025"),
+				    dbo_sanpham = Source{[Schema="dbo",Item="sanpham"]}[Data],
+				    #"Added Conditional Column" = Table.AddColumn(dbo_sanpham, "Custom", each if [Nhóm_sản_phẩm] = "Phần mềm" then 1 else if [Nhóm_sản_phẩm] = "Phụ kiện" then 2 else if [Nhóm_sản_phẩm] = "Máy tính" then 3 else 4),
+				    #"Renamed Columns" = Table.RenameColumns(#"Added Conditional Column",{{"Custom", "Index"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

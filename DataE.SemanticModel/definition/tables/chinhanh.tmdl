@@ -1,0 +1,42 @@
+table chinhanh
+	lineageTag: dbe55519-002c-4bbb-94de-64d4cd5cf484
+
+	column Mã_chi_nhánh
+		dataType: string
+		lineageTag: b4018170-da52-4bc5-92fa-b66363409d46
+		summarizeBy: none
+		sourceColumn: Mã_chi_nhánh
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tên_chi_nhánh
+		dataType: string
+		lineageTag: d3da1e3c-dfa9-466e-ae03-e2bd66dee284
+		summarizeBy: none
+		sourceColumn: Tên_chi_nhánh
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tỉnh_thành_phố
+		dataType: string
+		lineageTag: 70febf15-8c2c-46a4-b68e-6208ff0984ec
+		summarizeBy: none
+		sourceColumn: Tỉnh_thành_phố
+
+		annotation SummarizationSetBy = Automatic
+
+	partition chinhanh = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("DESKTOP-R39PBBV\SQLEXPRESS", "DataE2025"),
+				    dbo_chinhanh = Source{[Schema="dbo",Item="chinhanh"]}[Data]
+				in
+				    dbo_chinhanh
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

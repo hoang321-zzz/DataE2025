@@ -1,0 +1,48 @@
+table 'Phân loại'
+	lineageTag: c4a39533-cf0b-499c-968e-765f5f015fb8
+
+	column 'Phân loại'
+		lineageTag: d976e635-0ab1-4106-8401-d7b8a9422e1c
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Phân loại Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Phân loại Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Phân loại Fields'
+		isHidden
+		lineageTag: 74c0a9f2-723a-448a-9f34-8d719fd30fdb
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Phân loại Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Phân loại Order'
+		isHidden
+		formatString: 0
+		lineageTag: e097eaad-6c57-43ef-b0d5-dfe2de1e51f6
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Phân loại' = calculated
+		mode: import
+		source =
+				{
+				    ("Tổng doanh thu", NAMEOF('Measure'[Tổng doanh thu]), 0),
+				    ("Tổng giao dịch", NAMEOF('Measure'[Tổng giao dịch]), 1)
+				}
+
+	annotation PBI_Id = b103f0c912a94d749e3e0b7b664c7a23
+

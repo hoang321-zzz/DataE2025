@@ -1,0 +1,174 @@
+table Calendar
+	lineageTag: 269e6926-971a-4de6-89ae-ce767709e17e
+
+	column Date
+		formatString: General Date
+		lineageTag: 8991813a-187e-48d5-a9bb-5a95817510c6
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: 37a12886-0a0d-42a9-a36c-a9439838583b
+			defaultHierarchy: LocalDateTable_1d0aac16-e76d-4b56-85a2-2d2515f1c688.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		formatString: 0
+		lineageTag: e4d81461-3ba2-4e23-ba66-ef468d6076c9
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		lineageTag: f32b9d6d-5d36-4880-a5c7-a2a18048de84
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Quarter]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Number'
+		formatString: 0
+		lineageTag: b6718ca8-c687-4be3-b5af-7705db8cbce8
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Month Number]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Name (EN)'
+		lineageTag: d6c56ff5-0e9f-4b38-bb38-8f639f4a45ad
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month Name (EN)]
+		sortByColumn: 'Month Number'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Name (VI)'
+		lineageTag: 2af8eabb-5532-4be4-a1db-98e7b84333c7
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month Name (VI)]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Short'
+		lineageTag: bc89b0fc-4399-442e-963f-1e9016482a15
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month Short]
+		sortByColumn: 'Month Number'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Week Number'
+		formatString: 0
+		lineageTag: 6b78499f-e2ca-442f-a3d1-840c58450371
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Week Number]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Day
+		formatString: 0
+		lineageTag: b7110fe0-a05c-4901-ac5a-c4b0e43710ff
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Day]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Day of Week'
+		formatString: 0
+		lineageTag: 6f332ff2-4d42-47e3-916a-1e80df098f16
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Day of Week]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Day Name (EN)'
+		lineageTag: 51be06ba-46c4-4bc8-8518-d7682cd257de
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Day Name (EN)]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Day Name (VI)'
+		lineageTag: 5535f644-c3df-4bc5-a2d8-cebd0caa4e87
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Day Name (VI)]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Year Month YYYYMM'
+		lineageTag: 07ed149e-99b9-4df9-b42b-017c616e0447
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Year Month YYYYMM]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Year Month'
+		lineageTag: e486363d-c44e-466b-8c95-ee564c172f07
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Year Month]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Year Quarter'
+		lineageTag: ce6a2b9e-7d81-4a63-a2ac-850534209b9b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Year Quarter]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendar = calculated
+		mode: import
+		source = ```
+				
+				-- 1. Tự động lấy khoảng ngày dựa trên dữ liệu bán hàng của bạn
+				VAR MinDate = MIN('dulieubanhang'[Ngày_hạch_toán])
+				VAR MaxDate = MAX('dulieubanhang'[Ngày_hạch_toán])
+				
+				RETURN
+				ADDCOLUMNS (
+				    -- Tạo một danh sách các ngày liên tục từ MinDate đến MaxDate
+				    CALENDAR ( MinDate, MaxDate ),
+				    
+				    -- Thêm các cột phân tích thời gian thông dụng
+				    "Year", YEAR ( [Date] ),
+				    "Quarter", "Q" & FORMAT ( [Date], "Q" ),
+				    "Month Number", MONTH ( [Date] ),
+				    "Month Name (EN)", FORMAT ( [Date], "mmmm" ),                    -- January, February...
+				    "Month Name (VI)", "Tháng " & MONTH ( [Date] ),                  -- Tháng 1, Tháng 2...
+				    "Month Short", FORMAT ( [Date], "mmm" ),                        -- Jan, Feb...
+				    "Week Number", WEEKNUM ( [Date], 2 ),                            -- Tuần trong năm (bắt đầu từ Thứ 2)
+				    "Day", DAY ( [Date] ),
+				    "Day of Week", WEEKDAY ( [Date], 2 ),                            -- Số thứ tự ngày trong tuần (1 = Thứ 2, 7 = Chủ Nhật)
+				    "Day Name (EN)", FORMAT ( [Date], "dddd" ),                      -- Monday, Tuesday...
+				    "Day Name (VI)", 
+				        SWITCH ( 
+				            WEEKDAY ( [Date], 2 ),
+				            1, "Thứ Hai", 2, "Thứ Ba", 3, "Thứ Tư", 
+				            4, "Thứ Năm", 5, "Thứ Sáu", 6, "Thứ Bảy", 7, "Chủ Nhật"
+				        ),
+				    "Year Month YYYYMM", FORMAT ( [Date], "YYYYMM" ),                -- Số nguyên (Ví dụ: 202401) dùng để Sort dữ liệu
+				    "Year Month", FORMAT ( [Date], "YYYY-MM" ),                      -- Dạng chuỗi (Ví dụ: 2024-01) để hiển thị lên biểu đồ
+				    "Year Quarter", YEAR ( [Date] ) & "-Q" & FORMAT ( [Date], "Q" )  -- Ví dụ: 2024-Q1
+				)
+				```
+
+	annotation PBI_Id = 1af5db9e7db54aaea76456f4ceea6af0
+

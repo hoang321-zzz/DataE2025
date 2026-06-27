@@ -1,0 +1,126 @@
+table Measure
+	lineageTag: b761a6b4-f609-434b-982b-996c6f0fd3b3
+
+	measure 'Tổng doanh thu' = SUM(dulieubanhang[Doanh_thu])*(1-('Discount (%)'[Discount (%) Value]/100))
+		formatString: #,0.00\ "₫";-#,0.00\ "₫";#,0.00\ "₫"
+		lineageTag: 1d5fd15b-2948-4d0b-a6bc-1e36a5693be9
+
+		annotation PBI_FormatHint = {"currencyCulture":"vi-VN"}
+
+	measure 'Tổng giao dịch' = DISTINCTCOUNT(dulieubanhang[Đơn_hàng])
+		formatString: 0
+		lineageTag: f632d24b-1d0b-4608-9eff-9d7ddd534854
+
+	measure 'Ngày bắt đầu' = MIN('Calendar'[Date])
+		formatString: General Date
+		lineageTag: 42a3a032-48d5-49e9-9649-92406fbacb49
+
+	measure 'Ngày kết thúc' = MAX('Calendar'[Date])
+		formatString: General Date
+		lineageTag: 758b4888-e431-40a8-9fa4-1d873e9206ae
+
+	measure 'Tổng doanh thu tháng trước' = CALCULATE([Tổng doanh thu], DATEADD('Calendar'[Date],-1,MONTH))
+		lineageTag: 4dcb675f-9dcd-4abf-bf69-886c122aee4d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Tổng doanh thu lũy kế' = TOTALYTD([Tổng doanh thu],'Calendar'[Date])
+		lineageTag: 660d73ff-180a-4c5d-b18c-25b30d7698cf
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Khoảng ngày' = DATEDIFF([Ngày bắt đầu],[Ngày kết thúc],DAY) + 1
+		formatString: 0
+		lineageTag: 686b482c-cddc-4362-84f7-228199cefd91
+
+	measure 'Tổng doanh thu khoảng trước đó' = CALCULATE([Tổng doanh thu], DATEADD('Calendar'[Date], -[Khoảng ngày],DAY))
+		lineageTag: 064d3967-6489-4959-bfa6-d485ef277a0a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure AOV = [Tổng doanh thu]/[Tổng giao dịch có giá trị]
+		formatString: #,0.0\ "₫";-#,0.0\ "₫";#,0.0\ "₫"
+		lineageTag: 37dee132-f043-4831-9b68-a0700c09e627
+
+		annotation PBI_FormatHint = {"currencyCulture":"vi-VN"}
+
+	measure 'Tổng giá vốn hàng hóa' = SUM(dulieubanhang[Giá_vốn_hàng_hóa])
+		lineageTag: 330361df-f892-4544-835e-8383457e8362
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Lợi nhuận gộp' = [Tổng doanh thu] - [Tổng giá vốn hàng hóa]
+		formatString: #,0.0\ "₫";-#,0.0\ "₫";#,0.0\ "₫"
+		lineageTag: b43d00ad-f537-4154-9b73-0ad27b80138f
+
+		annotation PBI_FormatHint = {"currencyCulture":"vi-VN"}
+
+	measure 'Tổng giao dịch có giá trị' = CALCULATE(DISTINCTCOUNT(dulieubanhang[Đơn_hàng]),dulieubanhang[Đơn_giá]>0)
+		formatString: 0
+		lineageTag: 022467b4-3121-4c6a-b904-1aa314084385
+
+	measure 'Biên lợi nhuận' = ```
+			
+			DIVIDE (
+			    [Tổng doanh thu] - [Tổng giá vốn hàng hóa], 
+			    [Tổng doanh thu], 
+			    0
+			)
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 5a95c6c0-6288-419b-b4bb-c660c6cf1bc8
+
+	measure 'Số lượng bán' = SUM(dulieubanhang[Số_lượng_bán])
+		formatString: 0
+		lineageTag: 17baaaac-193f-4c22-8e31-374258a8a772
+
+	measure 'Pareto sản phẩm' = ```
+			
+			VAR doanhthu = SUM(dulieubanhang[Doanh_thu])
+			VAR luyke = 
+			    SUMX(
+			        FILTER(
+			            SUMMARIZE(ALLSELECTED(dulieubanhang),dulieubanhang[Mã_Sản_Phẩm],"Amount",SUM(dulieubanhang[Doanh_thu])),
+			            [Amount] >= doanhthu), [Amount])
+			var tongdoanhthu = CALCULATE(SUM(dulieubanhang[Doanh_thu]), ALLSELECTED(dulieubanhang))
+			RETURN luyke/tongdoanhthu
+			```
+		lineageTag: c31508c7-1eb2-4ce4-9c35-164fa054f86c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Pareto nhân viên' = ```
+			
+			VAR doanhthu = SUM(dulieubanhang[Doanh_thu])
+			VAR luyke = 
+			    SUMX(
+			        FILTER(
+			            SUMMARIZE(ALLSELECTED(dulieubanhang),dulieubanhang[Mã_nhân_viên_bán],"Amount",SUM(dulieubanhang[Doanh_thu])),
+			            [Amount] >= doanhthu), [Amount])
+			var tongdoanhthu = CALCULATE(SUM(dulieubanhang[Doanh_thu]), ALLSELECTED(dulieubanhang))
+			RETURN luyke/tongdoanhthu
+			```
+		lineageTag: 8b610f3b-cb54-4073-9915-03fa8063f2d8
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure EVG = CALCULATE(DISTINCTCOUNT(customer_value[Mã_KH]), customer_value[Segment] = "Champions")
+		formatString: 0
+		lineageTag: 6faf157c-4773-45c1-a02c-bce0a4dd2398
+
+	measure SOM = CALCULATE(DISTINCTCOUNT(customer_value[Mã_KH]), customer_value[R_score] >= 3, customer_value[F_score] >=3, customer_value[M_score] >=4)
+		formatString: 0
+		lineageTag: 9dba4b41-9b94-4ff1-99a0-2ff9cfb8dfed
+
+	partition Measure = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WqlCKjQUA", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,161 @@
+table KPI
+	lineageTag: 059620ab-08c9-4457-a0e6-1a0db8a11a50
+
+	measure DoanhThuCaNam = SUM('KPI'[DoanhThuThucTe])
+		lineageTag: 045a9fb6-42ea-43e6-858d-ebd448013167
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Goal_KPI_Moi = ```
+			
+			// 1. Dùng ALLSELECTED để lấy đúng khoảng thời gian từ Slicer, bỏ qua trục Trend của biểu đồ
+			VAR MinSlicerDate = CALCULATE(MIN('Calendar'[Date]), ALLSELECTED('Calendar'[Date]))
+			VAR MaxSlicerDate = CALCULATE(MAX('Calendar'[Date]), ALLSELECTED('Calendar'[Date]))
+			
+			// 2. Kiểm tra nếu không có ngày nào được chọn thì trả về trống để tránh lỗi hàm DATE
+			VAR Result = 
+			IF(
+			    ISBLANK(MinSlicerDate) || ISBLANK(MaxSlicerDate),
+			    BLANK(),
+			    
+			    // Đưa về mùng 1 của tháng bắt đầu và kết thúc
+			    VAR StartTargetMonth = DATE(YEAR(MinSlicerDate), MONTH(MinSlicerDate), 1)
+			    VAR EndTargetMonth = DATE(YEAR(MaxSlicerDate), MONTH(MaxSlicerDate), 1)
+			    
+			    RETURN
+			    CALCULATE(
+			        SUM('KPI'[MucTieuKPI]),
+			        REMOVEFILTERS('Calendar'), 
+			        'KPI'[Thang] >= StartTargetMonth,
+			        'KPI'[Thang] <= EndTargetMonth
+			    )
+			)
+			
+			RETURN Result
+			```
+		lineageTag: 9c6a4a38-1e47-491e-bcb1-0cc9776ba523
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure DoanhThuTheoSlicer_Moi = ```
+			
+			// 1. Dùng ALLSELECTED để lấy đúng khoảng thời gian từ Slicer, bỏ qua trục Trend của biểu đồ
+			VAR MinSlicerDate = CALCULATE(MIN('Calendar'[Date]), ALLSELECTED('Calendar'[Date]))
+			VAR MaxSlicerDate = CALCULATE(MAX('Calendar'[Date]), ALLSELECTED('Calendar'[Date]))
+			
+			// 2. Kiểm tra nếu không có ngày nào được chọn thì trả về trống để tránh lỗi hàm DATE
+			VAR Result = 
+			IF(
+			    ISBLANK(MinSlicerDate) || ISBLANK(MaxSlicerDate),
+			    BLANK(),
+			    
+			    // Đưa về mùng 1 của tháng bắt đầu và kết thúc
+			    VAR StartTargetMonth = DATE(YEAR(MinSlicerDate), MONTH(MinSlicerDate), 1)
+			    VAR EndTargetMonth = DATE(YEAR(MaxSlicerDate), MONTH(MaxSlicerDate), 1)
+			    
+			    RETURN
+			    CALCULATE(
+			        SUM('KPI'[DoanhThuThucTe]),
+			        REMOVEFILTERS('Calendar'), 
+			        'KPI'[Thang] >= StartTargetMonth,
+			        'KPI'[Thang] <= EndTargetMonth
+			    )
+			)
+			
+			RETURN Result*(1-('Discount (%)'[Discount (%) Value]/100))
+			```
+		lineageTag: 688d4c9d-476f-4a4a-b8f6-bf413bda5dc9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Thang
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 5d37f535-59b3-4dac-8465-810068b46f7a
+		summarizeBy: none
+		sourceColumn: Thang
+
+		variation Variation
+			isDefault
+			relationship: c04963d6-a53c-41bd-be96-d1a443f50cb9
+			defaultHierarchy: LocalDateTable_33dfa815-6e1c-4870-a72f-fccdc5d75d02.'Date Hierarchy'
+
+		changedProperty = SortByColumn
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tên_chi_nhánh
+		dataType: string
+		lineageTag: 5d6c882f-18c6-4380-a188-4369758833d5
+		summarizeBy: none
+		sourceColumn: Tên_chi_nhánh
+
+		annotation SummarizationSetBy = Automatic
+
+	column DoanhThuThucTe
+		dataType: double
+		lineageTag: 98256a84-d17b-49c9-a9c3-d19fbd8de024
+		summarizeBy: sum
+		sourceColumn: DoanhThuThucTe
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column MucTieuKPI
+		dataType: double
+		lineageTag: 89729f2d-c458-4f05-8100-0a80ff337885
+		summarizeBy: sum
+		sourceColumn: MucTieuKPI
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ChenhLech
+		dataType: double
+		lineageTag: bbfbe6f3-f341-4788-91cc-b363ba7f51aa
+		summarizeBy: sum
+		sourceColumn: ChenhLech
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column percent_of_kpi
+		dataType: double
+		lineageTag: cfded4ab-ff9c-4151-96f8-0f4469abffc3
+		summarizeBy: sum
+		sourceColumn: percent_of_kpi
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Tháng-Năm
+		dataType: string
+		lineageTag: e699199e-9157-4548-8ff8-94dfbb02cc2a
+		summarizeBy: none
+		sourceColumn: Tháng-Năm
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	partition KPI = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("DESKTOP-R39PBBV\SQLEXPRESS", "DataE2025", [Query="--CTE to compare revenue and KPI    #(lf)WITH DoanhThuKPI AS (#(lf)    SELECT #(lf)        FORMAT([Ngày_hạch_toán], 'yyyy-MM') AS YearMonth,        -- Create YearMonth in dulieubanhang#(lf)        [Chi_nhánh],#(lf)        SUM([Doanh_thu]) AS TongDoanhThu#(lf)    FROM [dbo].[dulieubanhang]#(lf)    GROUP BY #(lf)        FORMAT([Ngày_hạch_toán], 'yyyy-MM'), #(lf)        [Chi_nhánh]#(lf))#(lf)SELECT #(lf)    dt.YearMonth AS Thang,#(lf)    cn.[Tên_chi_nhánh],#(lf)    dt.TongDoanhThu AS DoanhThuThucTe,#(lf)    kpi.KPI AS MucTieuKPI,#(lf)    (dt.TongDoanhThu - kpi.KPI) AS ChenhLech,#(lf)    ROUND((dt.TongDoanhThu / kpi.KPI) * 100, 2) AS percent_of_kpi     -- % of kpi#(lf)FROM DoanhThuKPI dt#(lf)JOIN [dbo].[chinhanh] cn #(lf)    ON dt.[Chi_nhánh] = cn.Mã_chi_nhánh#(lf)JOIN [KPI] kpi #(lf)    ON dt.YearMonth = kpi.[YearMonth] AND dt.Chi_nhánh = kpi.Mã_chi_nhánh#(lf)ORDER BY #(lf)    dt.YearMonth ASC, #(lf)    percent_of_kpi DESC; "]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Thang", type date}}),
+				    #"Added Custom Column" = Table.AddColumn(#"Changed Type", "Tháng-Năm", each Text.Combine({Date.ToText([Thang], "yyyy"), Date.ToText([Thang], "MM")}), type text),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Added Custom Column",{{"Thang", type datetime}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
