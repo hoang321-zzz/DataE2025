@@ -10,12 +10,14 @@
 | Metric | Actual | Target | Status |
 |--------|--------|--------|--------|
 | **Total Revenue** | 1,034.1B VND | ~1,040B VND | Miss by 0.56% |
-| **Total Transactions** | 9,994 | — | — |
+| **Total Transactions** | 9,994 orders | — | 9,804 with unit price > 0 |
 | **Gross Profit** | 344.7B VND | — | Stable 33.3% margin |
-| **Average Order Value** | 105,481,218 VND | — | Confirms B2B profile |
+| **Average Order Value** | 105,481,218 VND | — | Revenue ÷ 9,804 valued orders |
 | **Active Customers** | 168 / 786 SAM | — | 618 untapped prospects |
 
 > A **constant 33.3% gross margin** reflects consistent category-level pricing. An AOV of 105M VND confirms a **pure B2B model** — large, recurring, contract-driven transactions.
+>
+> *The Power BI report is fully interactive: a **Revenue ↔ Transactions** toggle switches the measure behind every chart, and slicers for **Discount %**, date, branch, product group, product code, and customer type recompute all visuals live.*
 
 ---
 
@@ -193,6 +195,8 @@ Company-wide, **Software drives 55% of revenue** (69% of all order lines). Yet *
 | Services | 20.5B | 2.0% | 74 | 0.7% |
 
 Software leads **every month** in both revenue and volume; Services is negligible (2% of revenue, <1% of orders) — a potential whitespace if it carries strategic or margin value worth expanding.
+
+> 📊 The Sales Performance page also includes an interactive **decomposition tree** (Revenue → Branch → Product group → Employee) for ad-hoc drill-down into any path.
 
 ---
 
