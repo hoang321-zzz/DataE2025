@@ -57,8 +57,9 @@
 ### Monthly Revenue Trend
 
 ```
-Jan   Feb    Mar    Apr    May    Jun    Jul    Aug   Sep       Oct    Nov    Dec
-77B   76.9B   95B  90.7B  102.3B   88.9B   87.3B   90.6B   89.5B   82.3B   80.3B   72.7B
+| Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+| 77B | 76.9B | 95B | 90.7B | 102.3B | 88.9B | 87.3B | 90.6B | 89.5B | 82.3B | 80.3B | 72.7B |
 ```
 
 **May is the peak** (102.3B), driven by mid-year corporate budget cycles. **December is the trough** (72.7B), with Jan–Feb also soft (Tet holiday + new fiscal-year lag). The steady Q4 slide signals the need for an **end-of-year deal push** targeting corporate budget flush.
